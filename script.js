@@ -1,3 +1,8 @@
+// Prevent page scrolling
+window.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+}, { passive: false });
+
 const images = [
     'images/running-change-step.png',
     'images/running-left-step.png',
@@ -137,20 +142,21 @@ window.addEventListener('resize', () => {
 });
 
 window.addEventListener('keydown', (event) => {
-    if (['d', 'a', 'w', 'D', 'A', 'W'].includes(event.key)) {
+    const key = event.key.toLowerCase();
+    if (['d', 'a', 'w'].includes(key)) {
         event.preventDefault(); // Prevent default action to stop accent menu
         clearTimeout(standingTimeout); // Clear the timeout to prevent standing too early
-        if (event.key === 'd' || event.key === 'D') {
+        if (key === 'd') {
             if (!rightInterval) {
                 rightInterval = setInterval(() => moveSpiderman('right'), 50); // Faster interval for smoother animation
             }
             direction = 'right';
-        } else if (event.key === 'a' || event.key === 'A') {
+        } else if (key === 'a') {
             if (!leftInterval) {
                 leftInterval = setInterval(() => moveSpiderman('left'), 50); // Faster interval for smoother animation
             }
             direction = 'left';
-        } else if (event.key === 'w' || event.key === 'W') {
+        } else if (key === 'w') {
             if (isMoving) {
                 jumpAndMoveSpiderman();
             } else {
@@ -161,11 +167,12 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
-    if (['d', 'a', 'D', 'A'].includes(event.key)) {
-        if (event.key === 'd' || event.key === 'D') {
+    const key = event.key.toLowerCase();
+    if (['d', 'a'].includes(key)) {
+        if (key === 'd') {
             clearInterval(rightInterval);
             rightInterval = null;
-        } else if (event.key === 'a' || event.key === 'A') {
+        } else if (key === 'a') {
             clearInterval(leftInterval);
             leftInterval = null;
         }
