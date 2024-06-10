@@ -34,6 +34,18 @@ body {
     position: relative;
     background: url('images/background.jpg') no-repeat center center;
     background-size: cover;
+    overflow: hidden; /* Ensure background does not overflow */
+}
+
+#background,
+#building,
+#running-animation {
+    user-drag: none; /* Disable image dragging */
+    user-select: none; /* Disable text selection */
+    -webkit-user-drag: none; /* Disable image dragging for WebKit browsers */
+    -webkit-user-select: none; /* Disable text selection for WebKit browsers */
+    -moz-user-select: none; /* Disable text selection for Mozilla browsers */
+    -ms-user-select: none; /* Disable text selection for IE/Edge */
 }
 
 #building {
@@ -52,7 +64,7 @@ body {
     bottom: 0; /* This will be dynamically set by JavaScript */
     left: 50%; /* Center horizontally */
     transform: translateX(-50%); /* Center horizontally */
-    transition: transform 0.1s ease; /* Smooth movement */
+    transition: transform 0.1s ease, bottom 0.1s ease; /* Smooth movement */
 }
 
 .controls {
@@ -74,12 +86,12 @@ body {
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 10px 30px 800px rgb(0, 127, 215);
+    user-select: none; /* Prevent text selection */
 }
 
 .control-button:active {
-    background-color: rgba(255, 0, 0, 0.6);
+    background-color: rgba(255, 0, 0, 0.8);
 }
-
 
 .web-container {
     position: absolute;
@@ -97,4 +109,10 @@ body {
     object-fit: contain;
     transition: transform 0.1s ease; /* Smooth movement */
     z-index: 10; /* Ensure it is above other elements */
+}
+
+/* Prevent page scrolling */
+html, body {
+    touch-action: none;
+    overflow: hidden;
 }
