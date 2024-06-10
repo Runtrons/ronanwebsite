@@ -137,24 +137,38 @@ window.addEventListener('resize', () => {
 });
 
 window.addEventListener('keydown', (event) => {
-    clearTimeout(standingTimeout); // Clear the timeout to prevent standing too early
-    if (event.key === 'ArrowRight') {
-        moveSpiderman('right');
-        direction = 'right';
-    } else if (event.key === 'ArrowLeft') {
-        moveSpiderman('left');
-        direction = 'left';
-    } else if (event.key === 'ArrowUp') {
-        if (isMoving) {
-            jumpAndMoveSpiderman();
-        } else {
-            jumpSpiderman();
+    if (['d', 'a', 'w', 'D', 'A', 'W'].includes(event.key)) {
+        event.preventDefault(); // Prevent default action to stop accent menu
+        clearTimeout(standingTimeout); // Clear the timeout to prevent standing too early
+        if (event.key === 'd' || event.key === 'D') {
+            if (!rightInterval) {
+                rightInterval = setInterval(() => moveSpiderman('right'), 50); // Faster interval for smoother animation
+            }
+            direction = 'right';
+        } else if (event.key === 'a' || event.key === 'A') {
+            if (!leftInterval) {
+                leftInterval = setInterval(() => moveSpiderman('left'), 50); // Faster interval for smoother animation
+            }
+            direction = 'left';
+        } else if (event.key === 'w' || event.key === 'W') {
+            if (isMoving) {
+                jumpAndMoveSpiderman();
+            } else {
+                jumpSpiderman();
+            }
         }
     }
 });
 
 window.addEventListener('keyup', (event) => {
-    if (['ArrowRight', 'ArrowLeft'].includes(event.key)) {
+    if (['d', 'a', 'D', 'A'].includes(event.key)) {
+        if (event.key === 'd' || event.key === 'D') {
+            clearInterval(rightInterval);
+            rightInterval = null;
+        } else if (event.key === 'a' || event.key === 'A') {
+            clearInterval(leftInterval);
+            leftInterval = null;
+        }
         standingTimeout = setTimeout(resetToStanding, 300); // Shorter delay before resetting to standing
     }
 });
