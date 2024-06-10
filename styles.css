@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'Mightyspidey';
+    src: url('fonts/Mightyspidey-pmaa.ttf') format('truetype');
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.message {
+    font-family: 'Mightyspidey', sans-serif;
+    color: red;
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 10px 30px 800px rgb(0, 127, 215); /* Add box-shadow */
+    position: absolute; /* Move to the bottom */
+    bottom: 80px; /* Position it above controls */
+    background-color: rgba(27, 24, 24, 0.27); /* Add background color for better visibility */
+    z-index: 10; /* Ensure it's on top */
+}
+
+.animation-container {
+    width: 100%;  /* Full width */
+    height: 100%; /* Full height */
+    position: relative;
+    background: url('images/background.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+#building {
+    width: 80%; /* Default size */
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#running-animation {
+    width: 64px; /* Fixed width */
+    height: 64px; /* Fixed height */
+    object-fit: contain;  /* Maintain aspect ratio */
+    position: absolute;
+    bottom: 0; /* This will be dynamically set by JavaScript */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+    transition: transform 0.1s ease; /* Smooth movement */
+}
+
+.controls {
+    display: none; /* Hide by default */
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.control-button {
+    font-family: 'Mightyspidey', sans-serif;
+    font-size: 36px;
+    padding: 20px 40px;
+    background-color: rgba(255, 0, 0, 0.6);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 10px 30px 800px rgb(0, 127, 215);
+}
+
+.control-button:active {
+    background-color: rgba(255, 0, 0, 0.6);
+}
