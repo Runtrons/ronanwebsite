@@ -21,32 +21,70 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            transition: transform 3s ease-in-out, opacity 3s ease-in-out;
+            opacity: 1;
         }
         #logo {
             max-width: 300px;
             height: auto;
+            opacity: 0;
             filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
+            animation: appear 2s ease-in-out forwards, flicker 4s infinite alternate;
         }
-        #canvas-container {
-            width: 100%;
-            height: 100%;
-            display: none;
+        @keyframes appear {
+            0% {
+                opacity: 0;
+                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.1));
+            }
+            100% {
+                opacity: 1;
+                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5))
+                drop-shadow(0 0 10px rgba(0, 255, 255, 0.3))
+                drop-shadow(0 0 15px rgba(0, 255, 255, 0.1));
+            }
         }
-        #new-content {
-            display: none;
+        @keyframes flicker {
+            0%, 100% {
+                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5))
+                drop-shadow(0 0 10px rgba(0, 255, 255, 0.3))
+                drop-shadow(0 0 15px rgba(0, 255, 255, 0.1));
+            }
+            10%, 30%, 60% {
+                filter: invert(1) drop-shadow(0 0 3px rgba(0, 255, 255, 0.3))
+                drop-shadow(0 0 7px rgba(0, 255, 255, 0.2))
+                drop-shadow(0 0 10px rgba(0, 255, 255, 0.1));
+            }
+            20%, 50% {
+                filter: invert(1) drop-shadow(0 0 7px rgba(0, 255, 255, 0.7))
+                drop-shadow(0 0 15px rgba(0, 255, 255, 0.5))
+                drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
+            }
+        }
+        @keyframes particle {
+            0% { opacity: 0; transform: translateY(0); }
+            100% { opacity: 1; transform: translateY(-200px); }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .particle {
             position: absolute;
-            top: 50%;
+            bottom: 0;
             left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #00ffff;
+            width: 5px;
+            height: 5px;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particle 2s infinite ease-in-out;
         }
-        #new-content h1 {
-            margin: 0;
-            font-size: 4em;
+        .particle:nth-child(2) { left: 40%; animation-duration: 2.5s; }
+        .particle:nth-child(3) { left: 60%; animation-duration: 3s; }
+        .particle:nth-child(4) { left: 30%; animation-duration: 3.5s; }
+        .particle:nth-child(5) { left: 70%; animation-duration: 4s; }
+        #shop-page {
+            display: none;
+            animation: fadeIn 2s ease-in-out forwards;
         }
     </style>
 </head>
@@ -54,99 +92,52 @@
 <div id="logo-container">
     <img id="logo" src="Ronan_industries3.png" alt="Ronan Industries">
 </div>
-<div id="canvas-container"></div>
-<div id="new-content">
-    <h1>Welcome to Ronan Industries</h1>
-    <p>Innovating the Future</p>
+<div id="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+<div id="shop-page">
+    <header style="text-align: center; padding: 20px; background-color: #000;">
+        <h1 style="color: cyan;">Ronan Industries Shop</h1>
+    </header>
+    <main style="display: flex; flex-wrap: wrap; justify-content: center; padding: 20px;">
+        <div style="background-color: #111; margin: 10px; padding: 20px; border: 1px solid cyan; color: cyan; width: 200px;">
+            <h2>Product 1</h2>
+            <p>Description of Product 1</p>
+            <button style="background-color: cyan; color: #000; padding: 10px; border: none;">Buy Now</button>
+        </div>
+        <div style="background-color: #111; margin: 10px; padding: 20px; border: 1px solid cyan; color: cyan; width: 200px;">
+            <h2>Product 2</h2>
+            <p>Description of Product 2</p>
+            <button style="background-color: cyan; color: #000; padding: 10px; border: none;">Buy Now</button>
+        </div>
+        <div style="background-color: #111; margin: 10px; padding: 20px; border: 1px solid cyan; color: cyan; width: 200px;">
+            <h2>Product 3</h2>
+            <p>Description of Product 3</p>
+            <button style="background-color: cyan; color: #000; padding: 10px; border: none;">Buy Now</button>
+        </div>
+        <!-- Add more products as needed -->
+    </main>
+    <footer style="text-align: center; padding: 20px; background-color: #000; color: cyan;">
+        <p>© 2024 Ronan Industries</p>
+    </footer>
+</div>
 <script>
-    // JavaScript code for particle explosion and morphing
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+            document.getElementById('logo-container').style.transform = 'translate(-50%, -50%) scale(50)';
+            document.getElementById('logo-container').style.opacity = '0';
+        }, 4000);
 
-    const logoContainer = document.getElementById('logo-container');
-    const logo = document.getElementById('logo');
-    const canvasContainer = document.getElementById('canvas-container');
-    const newContent = document.getElementById('new-content');
-
-    function explodeLogo() {
-        logoContainer.style.display = 'none';
-        canvasContainer.style.display = 'block';
-
-        // Set up three.js scene
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        canvasContainer.appendChild(renderer.domElement);
-
-        // Set up cannon.js physics
-        const world = new CANNON.World();
-        world.gravity.set(0, 0, -9.82);
-
-        // Create particles
-        const particles = [];
-        const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-        const particleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-
-        for (let i = 0; i < 1000; i++) {
-            const particle = new THREE.Mesh(particleGeometry, particleMaterial);
-            const particleBody = new CANNON.Body({
-                mass: 1,
-                shape: new CANNON.Sphere(0.1)
-            });
-            particleBody.position.set(0, 0, 0);
-            scene.add(particle);
-            world.addBody(particleBody);
-            particles.push({ mesh: particle, body: particleBody });
-        }
-
-        // Set initial explosion velocity
-        particles.forEach(p => {
-            p.body.velocity.set((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
-        });
-
-        camera.position.z = 5;
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Update physics
-            world.step(1 / 60);
-
-            // Update particle positions
-            particles.forEach(p => {
-                p.mesh.position.copy(p.body.position);
-            });
-
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Add bounce off screen edges
-        function checkBounds(particle) {
-            if (particle.body.position.x < -window.innerWidth / 2 || particle.body.position.x > window.innerWidth / 2) {
-                particle.body.velocity.x *= -1;
-            }
-            if (particle.body.position.y < -window.innerHeight / 2 || particle.body.position.y > window.innerHeight / 2) {
-                particle.body.velocity.y *= -1;
-            }
-        }
-        particles.forEach(p => {
-            checkBounds(p);
-        });
-
-        // Morph particles into new text
-        setTimeout(() => {
-            canvasContainer.style.display = 'none';
-            newContent.style.display = 'block';
-            // Implement morphing logic here
-        }, 3000);
-    }
-
-    // Trigger the explosion after a delay
-    setTimeout(explodeLogo, 3000);
+        setTimeout(function() {
+            document.getElementById('logo-container').style.display = 'none';
+            document.getElementById('particles').style.display = 'none';
+            document.getElementById('shop-page').style.display = 'block';
+        }, 7000); // Adjust timing as needed
+    });
 </script>
 </body>
 </html>
