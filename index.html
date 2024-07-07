@@ -3,66 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ronan Industries</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+    <title>Random Number Generator</title>
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            height: 100%;
-            font-family: 'Archivo Black', sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
-            background-color: #000000;
         }
-        #logo-container {
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 80%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        #result {
+            font-size: 4em;
+            color: #ffffff;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        .btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #riggingMenu {
+            display: none;
+            margin-top: 20px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .range-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .range-input {
+            width: 45%;
+        }
+        .particles {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
         }
-        #logo {
-            max-width: 300px;
-            height: auto;
-            opacity: 0;
-            filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
-            animation: appear 2s ease-in-out forwards, flicker 4s infinite alternate;
+        .particle {
+            position: absolute;
+            border-radius: 50%;
         }
-        @keyframes appear {
-            0% {
-                opacity: 0;
-                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.1));
-            }
-            100% {
-                opacity: 1;
-                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5))
-                drop-shadow(0 0 10px rgba(0, 255, 255, 0.3))
-                drop-shadow(0 0 15px rgba(0, 255, 255, 0.1));
-            }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
         }
-        @keyframes flicker {
-            0%, 100% {
-                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.5))
-                drop-shadow(0 0 10px rgba(0, 255, 255, 0.3))
-                drop-shadow(0 0 15px rgba(0, 255, 255, 0.1));
-            }
-            25%, 75% {
-                filter: invert(1) drop-shadow(0 0 5px rgba(0, 255, 255, 0.4))
-                drop-shadow(0 0 8px rgba(0, 255, 255, 0.25))
-                drop-shadow(0 0 12px rgba(0, 255, 255, 0.15));
-            }
-            50% {
-                filter: invert(1) drop-shadow(0 0 7px rgba(0, 255, 255, 0.6))
-                drop-shadow(0 0 12px rgba(0, 255, 255, 0.4))
-                drop-shadow(0 0 18px rgba(0, 255, 255, 0.25));
-            }
+        #hideButton {
+            background-color: #f44336;
+        }
+        #hideButton:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
-<div id="logo-container">
-    <img id="logo" src="Ronan_industries3.png" alt="Ronan Industries">
-</div>
+    <div class="particles"></div>
+    <div class="container">
+        <h1>Random Number Generator</h1>
+        <div id="result">0</div>
+        <div class="range-container">
+            <input type="number" id="minRange" class="input-field range-input" placeholder="Min" value="1">
+            <input type="number" id="maxRange" class="input-field range-input" placeholder="Max" value="6">
+        </div>
+        <button id="goButton" class="btn">GO</button>
+        <div id="riggingMenu">
+            <input type="text" id="riggingInput" class="input-field" placeholder="Desired (n) or excluded (-n) numbers, comma-separated">
+            <button id="hideButton" class="btn">Hide</button>
+        </div>
+    </div>
+
+    <script>
+        const result = document.getElementById('result');
+        const goButton = document.getElementById('goButton');
+        const riggingMenu = document.getElementById('riggingMenu');
+        const riggingInput = document.getElementById('riggingInput');
+        const hideButton = document.getElementById('hideButton');
+        const minRange = document.getElementById('minRange');
+        const maxRange = document.getElementById('maxRange');
+        let pressTimer;
+        let isRigged = false;
+        let desiredNumbers = [];
+        let excludedNumbers = [];
+
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.width = `${Math.random() * 10 + 5}px`;
+                particle.style.height = particle.style.width;
+                particle.style.background = `hsl(${Math.random() * 360}, 100%, 75%)`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out infinite`;
+                particle.style.opacity = Math.random() * 0.5 + 0.5;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        function showRiggingMenu() {
+            riggingMenu.style.display = 'block';
+        }
+
+        function hideRiggingMenu() {
+            riggingMenu.style.display = 'none';
+        }
+
+        function startPress() {
+            pressTimer = setTimeout(showRiggingMenu, 1000);
+        }
+
+        function endPress() {
+            clearTimeout(pressTimer);
+        }
+
+        document.addEventListener('mousedown', startPress);
+        document.addEventListener('mouseup', endPress);
+        document.addEventListener('touchstart', startPress);
+        document.addEventListener('touchend', endPress);
+
+        hideButton.addEventListener('click', hideRiggingMenu);
+
+        riggingInput.addEventListener('change', () => {
+            const input = riggingInput.value.trim();
+            desiredNumbers = [];
+            excludedNumbers = [];
+            isRigged = false;
+            
+            if (input) {
+                const numbers = input.split(',').map(n => n.trim());
+                numbers.forEach(n => {
+                    if (n.startsWith('-')) {
+                        excludedNumbers.push(parseInt(n.slice(1)));
+                    } else {
+                        desiredNumbers.push(parseInt(n));
+                    }
+                });
+                isRigged = true;
+            }
+        });
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function animateNumber() {
+            let count = 0;
+            const animationDuration = 2000;
+            const interval = 50;
+            const iterations = animationDuration / interval;
+            const min = parseInt(minRange.value);
+            const max = parseInt(maxRange.value);
+
+            const animation = setInterval(() => {
+                result.textContent = getRandomNumber(min, max);
+                count++;
+
+                if (count >= iterations) {
+                    clearInterval(animation);
+                    if (isRigged) {
+                        const validDesired = desiredNumbers.filter(num => num >= min && num <= max);
+                        if (validDesired.length > 0) {
+                            result.textContent = validDesired[Math.floor(Math.random() * validDesired.length)];
+                        } else {
+                            let riggedNumber;
+                            do {
+                                riggedNumber = getRandomNumber(min, max);
+                            } while (excludedNumbers.includes(riggedNumber));
+                            result.textContent = riggedNumber;
+                        }
+                    } else {
+                        result.textContent = getRandomNumber(min, max);
+                    }
+                }
+            }, interval);
+        }
+
+        goButton.addEventListener('click', animateNumber);
+    </script>
 </body>
 </html>
