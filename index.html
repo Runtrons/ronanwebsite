@@ -190,7 +190,8 @@
         // Secret button functionality
         let tapCount = 0;
         let lastTap = 0;
-        secretButton.addEventListener('click', function(e) {
+
+        function handleSecretButtonTap(e) {
             const currentTime = new Date().getTime();
             const tapDelay = currentTime - lastTap;
             if (tapDelay < 500 && tapDelay > 0) {
@@ -203,7 +204,10 @@
                 tapCount = 1;
             }
             lastTap = currentTime;
-        });
+        }
+
+        secretButton.addEventListener('click', handleSecretButtonTap);
+        secretButton.addEventListener('touchend', handleSecretButtonTap);
 
         // Desktop press-and-hold functionality
         let pressTimer;
