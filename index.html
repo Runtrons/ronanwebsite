@@ -142,7 +142,7 @@
         </div>
         <button id="goButton" class="btn">GO</button>
         <div id="riggingMenu">
-            <input type="text" id="riggingInput" class="input-field" placeholder="Rig with desired (n) or excluded (-n) numbers, comma-separated">
+            <input type="text" id="riggingInput" class="input-field" placeholder="Rig with (n) numbers or excluded (-n) numbers, comma-separated">
             <button id="hideButton" class="btn">Hide</button>
         </div>
         <button id="secretButton"></button>
@@ -188,41 +188,8 @@
         }
 
         // Secret button functionality
-        let tapCount = 0;
-        let lastTap = 0;
-
-        function handleSecretButtonTap(e) {
-            const currentTime = new Date().getTime();
-            const tapDelay = currentTime - lastTap;
-            if (tapDelay < 500 && tapDelay > 0) {
-                tapCount++;
-                if (tapCount === 5) {
-                    showRiggingMenu();
-                    tapCount = 0;
-                }
-            } else {
-                tapCount = 1;
-            }
-            lastTap = currentTime;
-        }
-
-        secretButton.addEventListener('click', handleSecretButtonTap);
-        secretButton.addEventListener('touchend', handleSecretButtonTap);
-
-        // Desktop press-and-hold functionality
-        let pressTimer;
-        function startPress() {
-            pressTimer = setTimeout(showRiggingMenu, 1000);
-        }
-        function endPress() {
-            clearTimeout(pressTimer);
-        }
-
-        // Only add press-and-hold for non-touch devices
-        if (!('ontouchstart' in window)) {
-            document.addEventListener('mousedown', startPress);
-            document.addEventListener('mouseup', endPress);
-        }
+        secretButton.addEventListener('click', showRiggingMenu);
+        secretButton.addEventListener('touchend', showRiggingMenu);
 
         hideButton.addEventListener('click', hideRiggingMenu);
 
