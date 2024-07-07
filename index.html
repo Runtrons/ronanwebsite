@@ -18,6 +18,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            user-select: none;
         }
         .container {
             background-color: rgba(255, 255, 255, 0.1);
@@ -29,6 +30,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
             width: 80%;
             max-width: 500px;
+            position: relative;
         }
         h1 {
             color: #ffffff;
@@ -116,6 +118,17 @@
         #hideButton:hover {
             background-color: #d32f2f;
         }
+        #secretButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -132,6 +145,7 @@
             <input type="text" id="riggingInput" class="input-field" placeholder="Desired (n) or excluded (-n) numbers, comma-separated">
             <button id="hideButton" class="btn">Hide</button>
         </div>
+        <button id="secretButton"></button>
     </div>
 
     <script>
@@ -142,7 +156,7 @@
         const hideButton = document.getElementById('hideButton');
         const minRange = document.getElementById('minRange');
         const maxRange = document.getElementById('maxRange');
-        let pressTimer;
+        const secretButton = document.getElementById('secretButton');
         let isRigged = false;
         let desiredNumbers = [];
         let excludedNumbers = [];
@@ -173,18 +187,38 @@
             riggingMenu.style.display = 'none';
         }
 
+        // Secret button functionality
+        let tapCount = 0;
+        let lastTap = 0;
+        secretButton.addEventListener('click', function(e) {
+            const currentTime = new Date().getTime();
+            const tapDelay = currentTime - lastTap;
+            if (tapDelay < 500 && tapDelay > 0) {
+                tapCount++;
+                if (tapCount === 5) {
+                    showRiggingMenu();
+                    tapCount = 0;
+                }
+            } else {
+                tapCount = 1;
+            }
+            lastTap = currentTime;
+        });
+
+        // Desktop press-and-hold functionality
+        let pressTimer;
         function startPress() {
             pressTimer = setTimeout(showRiggingMenu, 1000);
         }
-
         function endPress() {
             clearTimeout(pressTimer);
         }
 
-        document.addEventListener('mousedown', startPress);
-        document.addEventListener('mouseup', endPress);
-        document.addEventListener('touchstart', startPress);
-        document.addEventListener('touchend', endPress);
+        // Only add press-and-hold for non-touch devices
+        if (!('ontouchstart' in window)) {
+            document.addEventListener('mousedown', startPress);
+            document.addEventListener('mouseup', endPress);
+        }
 
         hideButton.addEventListener('click', hideRiggingMenu);
 
