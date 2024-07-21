@@ -3,252 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Number Generator</title>
+    <title>Hadidely's Art Gallery</title>
     <style>
-        * {
+        @keyframes colorPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-5px) translateX(5px); }
+            75% { transform: translateY(5px) translateX(-5px); }
+        }
+
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body {
+            height: 100%;
+            overflow: hidden;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: colorPulse 15s ease infinite;
+        }
+
+        .title {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 48px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            z-index: 100;
+            animation: titleFloat 5s ease-in-out infinite;
+        }
+
+        .gallery {
+            position: relative;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            user-select: none;
+            perspective: 1000px;
         }
-        .container {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            width: 80%;
-            max-width: 500px;
-            position: relative;
-        }
-        h1 {
-            color: #ffffff;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        #result {
-            font-size: 4em;
-            color: #ffffff;
-            margin: 20px 0;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-        }
-        .btn {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .btn:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-        }
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        #riggingMenu {
-            display: none;
-            margin-top: 20px;
-        }
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
-        .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .range-container {
+
+        .art-piece {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-top: 20px;
-        }
-        .range-input {
-            width: 45%;
-        }
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-        #hideButton {
-            background-color: #f44336;
-        }
-        #hideButton:hover {
-            background-color: #d32f2f;
-        }
-        #secretButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 20px;
-            height: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
+            font-size: 18px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             cursor: pointer;
+            transition: all 0.3s ease;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .art-piece:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .art-piece:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+        .art-piece:nth-child(2) { top: 60%; left: 70%; animation-delay: 0.5s; }
+        .art-piece:nth-child(3) { top: 40%; left: 50%; animation-delay: 1s; }
+        .art-piece:nth-child(4) { top: 30%; left: 80%; animation-delay: 1.5s; }
+        .art-piece:nth-child(5) { top: 70%; left: 30%; animation-delay: 2s; }
+        .art-piece:nth-child(6) { top: 80%; left: 60%; animation-delay: 2.5s; }
+
+        .menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .menu-btn {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .menu-content {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .menu-content a {
+            display: block;
+            margin: 10px 0;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="particles"></div>
-    <div class="container">
-        <h1>Random Number Generator</h1>
-        <div id="result">0</div>
-        <div class="range-container">
-            <input type="number" id="minRange" class="input-field range-input" placeholder="Min" value="1">
-            <input type="number" id="maxRange" class="input-field range-input" placeholder="Max" value="6">
+    <div class="title">Hadidely's Art</div>
+    <div class="gallery">
+        <div class="art-piece">Piece 1</div>
+        <div class="art-piece">Piece 2</div>
+        <div class="art-piece">Piece 3</div>
+        <div class="art-piece">Piece 4</div>
+        <div class="art-piece">Piece 5</div>
+        <div class="art-piece">Piece 6</div>
+    </div>
+
+    <div class="menu">
+        <div class="menu-btn">≡</div>
+        <div class="menu-content">
+            <a href="#">Home</a>
+            <a href="#">Gallery</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
         </div>
-        <button id="goButton" class="btn">GO</button>
-        <div id="riggingMenu">
-            <input type="text" id="riggingInput" class="input-field" placeholder="Rig with (n) numbers or excluded (-n) numbers, comma-separated">
-            <button id="hideButton" class="btn">Hide</button>
-        </div>
-        <button id="secretButton"></button>
     </div>
 
     <script>
-        const result = document.getElementById('result');
-        const goButton = document.getElementById('goButton');
-        const riggingMenu = document.getElementById('riggingMenu');
-        const riggingInput = document.getElementById('riggingInput');
-        const hideButton = document.getElementById('hideButton');
-        const minRange = document.getElementById('minRange');
-        const maxRange = document.getElementById('maxRange');
-        const secretButton = document.getElementById('secretButton');
-        let isRigged = false;
-        let desiredNumbers = [];
-        let excludedNumbers = [];
-
-        function createParticles() {
-            const particlesContainer = document.querySelector('.particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.width = `${Math.random() * 10 + 5}px`;
-                particle.style.height = particle.style.width;
-                particle.style.background = `hsl(${Math.random() * 360}, 100%, 75%)`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out infinite`;
-                particle.style.opacity = Math.random() * 0.5 + 0.5;
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        createParticles();
-
-        function showRiggingMenu() {
-            riggingMenu.style.display = 'block';
-        }
-
-        function hideRiggingMenu() {
-            riggingMenu.style.display = 'none';
-        }
-
-        // Secret button functionality
-        secretButton.addEventListener('click', showRiggingMenu);
-        secretButton.addEventListener('touchend', showRiggingMenu);
-
-        hideButton.addEventListener('click', hideRiggingMenu);
-
-        riggingInput.addEventListener('change', () => {
-            const input = riggingInput.value.trim();
-            desiredNumbers = [];
-            excludedNumbers = [];
-            isRigged = false;
-            
-            if (input) {
-                const numbers = input.split(',').map(n => n.trim());
-                numbers.forEach(n => {
-                    if (n.startsWith('-')) {
-                        excludedNumbers.push(parseInt(n.slice(1)));
-                    } else {
-                        desiredNumbers.push(parseInt(n));
-                    }
-                });
-                isRigged = true;
-            }
+        document.querySelector('.menu-btn').addEventListener('click', function() {
+            const menuContent = document.querySelector('.menu-content');
+            menuContent.style.display = menuContent.style.display === 'none' ? 'block' : 'none';
         });
 
-        function getRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+        const artPieces = document.querySelectorAll('.art-piece');
+        const gallery = document.querySelector('.gallery');
 
-        function animateNumber() {
-            let count = 0;
-            const animationDuration = 2000;
-            const interval = 50;
-            const iterations = animationDuration / interval;
-            const min = parseInt(minRange.value);
-            const max = parseInt(maxRange.value);
+        function randomPosition(element) {
+            const rect = gallery.getBoundingClientRect();
+            const size = element.offsetWidth;
+            let newX, newY, overlapping;
 
-            const animation = setInterval(() => {
-                result.textContent = getRandomNumber(min, max);
-                count++;
+            do {
+                overlapping = false;
+                newX = Math.random() * (rect.width - size);
+                newY = Math.random() * (rect.height - size);
 
-                if (count >= iterations) {
-                    clearInterval(animation);
-                    if (isRigged) {
-                        const validDesired = desiredNumbers.filter(num => num >= min && num <= max);
-                        if (validDesired.length > 0) {
-                            result.textContent = validDesired[Math.floor(Math.random() * validDesired.length)];
-                        } else {
-                            let riggedNumber;
-                            do {
-                                riggedNumber = getRandomNumber(min, max);
-                            } while (excludedNumbers.includes(riggedNumber));
-                            result.textContent = riggedNumber;
+                for (let piece of artPieces) {
+                    if (piece !== element) {
+                        const pieceRect = piece.getBoundingClientRect();
+                        if (
+                            newX < pieceRect.right &&
+                            newX + size > pieceRect.left &&
+                            newY < pieceRect.bottom &&
+                            newY + size > pieceRect.top
+                        ) {
+                            overlapping = true;
+                            break;
                         }
-                    } else {
-                        result.textContent = getRandomNumber(min, max);
                     }
                 }
-            }, interval);
+            } while (overlapping);
+
+            return { x: newX, y: newY };
         }
 
-        goButton.addEventListener('click', animateNumber);
+        artPieces.forEach(piece => {
+            piece.addEventListener('click', function() {
+                const newPos = randomPosition(this);
+                this.style.transform = `scale(${Math.random() * 0.5 + 0.8}) rotate(${Math.random() * 360}deg)`;
+                this.style.left = `${newPos.x}px`;
+                this.style.top = `${newPos.y}px`;
+            });
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            const depth = 15; // Increased depth for less movement
+            const moveX = (e.pageX - window.innerWidth / 2) / depth;
+            const moveY = (e.pageY - window.innerHeight / 2) / depth;
+            gallery.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        });
     </script>
 </body>
 </html>
