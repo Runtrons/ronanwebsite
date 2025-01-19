@@ -1,206 +1,595 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadidely's Art Gallery</title>
-    <style>
-        @keyframes colorPulse {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+<html>
+	<head>
+		<style>
+			body {
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
+				background-color: #f5f5f5;
+				color: #333;
+			}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+			.header {
+				background-color: #2c3e50;
+				color: white;
+				padding: 20px;
+				border-radius: 8px;
+				margin-bottom: 30px;
+			}
 
-        @keyframes titleFloat {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-5px) translateX(5px); }
-            75% { transform: translateY(5px) translateX(-5px); }
-        }
+			.header a {
+				color: #3498db;
+				text-decoration: none;
+			}
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: colorPulse 15s ease infinite;
-        }
+			.header a:hover {
+				color: #2980b9;
+				text-decoration: underline;
+			}
 
-        .title {
-            position: fixed;
-            top: 20px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 48px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            z-index: 100;
-            animation: titleFloat 5s ease-in-out infinite;
-        }
+			.section {
+				background-color: white;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+				margin-bottom: 30px;
+			}
 
-        .gallery {
-            position: relative;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
-        }
+			.section-title {
+				color: #2c3e50;
+				margin-top: 0;
+				margin-bottom: 15px;
+				font-size: 1.2em;
+			}
 
-        .art-piece {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: float 6s ease-in-out infinite;
-        }
+			textarea {
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				padding: 10px;
+				font-family: monospace;
+				resize: none;
+				background-color: #f8f9fa;
+			}
 
-        .art-piece:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-        }
+			button, input[type="submit"] {
+				background-color: #3498db;
+				color: white;
+				border: none;
+				padding: 8px 16px;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 14px;
+				transition: background-color 0.2s;
+			}
 
-        .art-piece:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
-        .art-piece:nth-child(2) { top: 60%; left: 70%; animation-delay: 0.5s; }
-        .art-piece:nth-child(3) { top: 40%; left: 50%; animation-delay: 1s; }
-        .art-piece:nth-child(4) { top: 30%; left: 80%; animation-delay: 1.5s; }
-        .art-piece:nth-child(5) { top: 70%; left: 30%; animation-delay: 2s; }
-        .art-piece:nth-child(6) { top: 80%; left: 60%; animation-delay: 2.5s; }
+			button:hover, input[type="submit"]:hover {
+				background-color: #2980b9;
+			}
 
-        .menu {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-        }
+			#clearCanvas {
+				background-color: #e74c3c;
+			}
 
-        .menu-btn {
-            width: 50px;
-            height: 50px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+			#clearCanvas:hover {
+				background-color: #c0392b;
+			}
 
-        .menu-btn:hover {
-            transform: scale(1.1);
-        }
+			.copy-button {
+				background-color: #27ae60;
+			}
 
-        .menu-content {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
+			.copy-button:hover {
+				background-color: #219a52;
+			}
 
-        .menu-content a {
-            display: block;
-            margin: 10px 0;
-            color: #333;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="title">Hadidely's Art</div>
-    <div class="gallery">
-        <div class="art-piece">Piece 1</div>
-        <div class="art-piece">Piece 2</div>
-        <div class="art-piece">Piece 3</div>
-        <div class="art-piece">Piece 4</div>
-        <div class="art-piece">Piece 5</div>
-        <div class="art-piece">Piece 6</div>
-    </div>
+			canvas {
+				border-radius: 4px;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			}
 
-    <div class="menu">
-        <div class="menu-btn">≡</div>
-        <div class="menu-content">
-            <a href="#">Home</a>
-            <a href="#">Gallery</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-        </div>
-    </div>
+			.button-group {
+				display: flex;
+				gap: 10px;
+				margin-top: 10px;
+			}
 
-    <script>
-        document.querySelector('.menu-btn').addEventListener('click', function() {
-            const menuContent = document.querySelector('.menu-content');
-            menuContent.style.display = menuContent.style.display === 'none' ? 'block' : 'none';
-        });
+			.flex-container {
+				display: flex;
+				gap: 20px;
+				align-items: flex-start;
+			}
 
-        const artPieces = document.querySelectorAll('.art-piece');
-        const gallery = document.querySelector('.gallery');
+			.section-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 15px;
+			}
 
-        function randomPosition(element) {
-            const rect = gallery.getBoundingClientRect();
-            const size = element.offsetWidth;
-            let newX, newY, overlapping;
+			button#fillCanvas:hover {
+				background-color: #2c3e50;
+			}
+		</style>
+		<script type='text/javascript'><!--
 
-            do {
-                overlapping = false;
-                newX = Math.random() * (rect.width - size);
-                newY = Math.random() * (rect.height - size);
+		/**
+		 * Maze code based on http://rosettacode.org/wiki/Maze_generation#JavaScript
+		 * with modifications to randomize entrances, add side-loops, and
+		 * output openscad array code.
+		 */
+		function maze(x,y) {
+			var n=x*y-1;
+			if (n<0) {alert("illegal maze dimensions");return;}
+			var horiz =[]; for (var j= 0; j<x+1; j++) horiz[j]= [],
+			    verti =[]; for (var j= 0; j<y+1; j++) verti[j]= [],
+			    here = [Math.floor(Math.random()*x), Math.floor(Math.random()*y)],
+			    path = [here],
+			    unvisited = [];
+			for (var j = 0; j<x+2; j++) {
+				unvisited[j] = [];
+				for (var k= 0; k<y+1; k++)
+					unvisited[j].push(j>0 && j<x+1 && k>0 && (j != here[0]+1 || k != here[1]+1));
+			}
+			while (0<n) {
+				var potential = [[here[0]+1, here[1]], [here[0],here[1]+1],
+				    [here[0]-1, here[1]], [here[0],here[1]-1]];
+				var neighbors = [];
+				for (var j = 0; j < 4; j++)
+					if (unvisited[potential[j][0]+1][potential[j][1]+1])
+						neighbors.push(potential[j]);
+				if (neighbors.length) {
+					n = n-1;
+					next= neighbors[Math.floor(Math.random()*neighbors.length)];
+					unvisited[next[0]+1][next[1]+1]= false;
+					if (next[0] == here[0])
+						horiz[next[0]][(next[1]+here[1]-1)/2]= true;
+					else 
+						verti[(next[0]+here[0]-1)/2][next[1]]= true;
+					path.push(here = next);
+				} else 
+					here = path.pop();
+			}
+			return {x: x, y: y, horiz: horiz, verti: verti};
+		}
+		 
+		function display(m) {
+			var start=Math.floor(Math.random() * m.y);
+			var end=0;
 
-                for (let piece of artPieces) {
-                    if (piece !== element) {
-                        const pieceRect = piece.getBoundingClientRect();
-                        if (
-                            newX < pieceRect.right &&
-                            newX + size > pieceRect.left &&
-                            newY < pieceRect.bottom &&
-                            newY + size > pieceRect.top
-                        ) {
-                            overlapping = true;
-                            break;
-                        }
-                    }
-                }
-            } while (overlapping);
+			var text= [];
+			var celw=2;
 
-            return { x: newX, y: newY };
-        }
+			for (var j= 0; j<m.x*2+1; j++) {
+				var line= [];
+				if (0 == j%2)
+					for (var k=0; k<m.y*celw+1; k++)
+						if (0 == k%celw) 
+							line[k]= '#';
+						else
+							if (j>0 && m.verti[j/2-1][Math.floor(k/celw)])
+								line[k]= ' ';
+							else
+								line[k]= '#';
+				else
+					for (var k=0; k<m.y*celw+1; k++)
+						if (0 == k%celw)
+							if (k>0 && m.horiz[(j-1)/2][k/celw-1])
+								line[k]= ' ';
+							else
+								line[k]= '#';
+						else
+							line[k]= ' '; // Space inside cells
 
-        artPieces.forEach(piece => {
-            piece.addEventListener('click', function() {
-                const newPos = randomPosition(this);
-                this.style.transform = `scale(${Math.random() * 0.5 + 0.8}) rotate(${Math.random() * 360}deg)`;
-                this.style.left = `${newPos.x}px`;
-                this.style.top = `${newPos.y}px`;
-            });
-        });
+				line.length=32;
 
-        document.addEventListener('mousemove', function(e) {
-            const depth = 15; // Increased depth for less movement
-            const moveX = (e.pageX - window.innerWidth / 2) / depth;
-            const moveY = (e.pageY - window.innerHeight / 2) / depth;
-            gallery.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
-        });
-    </script>
-</body>
+				//if (0 == j) line[1]= line[2]= line[3]=' ';
+				// Entrance
+				if(j == 0)
+					line[(start*2)+1]=' ';
+
+				if(j && (Math.floor(Math.random() * 8)==0) && 
+					(line[31]==' ') && (line[1] == ' '))
+				{
+					line[30]=" ";
+					line[31]=" ";
+					line[32]=" ";
+					line[0]=" ";
+				}
+
+				// Exit
+				//if (m.x*2-1 == j) line[4*m.y]= ' ';
+				//if(j == ((m.x*2))) line[1]=line[2]=line[3]=' ';
+
+				text.push('"'+line.join('')+'",\r\n');
+			}
+
+			for(n=0; n<(text.length-1); n++)
+				text[n] = "   " + text[n];
+
+			text[text.length-1] = "// "+text[text.length-1];
+			text.unshift("m=[\r\n");
+			text.push("];\r\n");
+
+			return(text.join(''));
+		}
+
+		function displayCanvas(m) {
+			const canvas = document.getElementById('mazeCanvas');
+			const ctx = canvas.getContext('2d');
+			
+			const cellSize = 12;
+			const padding = cellSize * 2;
+			canvas.width = 32 * cellSize + padding * 2;
+			canvas.height = 23 * cellSize + padding * 2;
+			
+			// Clear canvas
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			
+			// Draw maze
+			const lines = display(m).split('\r\n');
+			const offsetX = padding;
+			const offsetY = padding;
+			
+			for (let i = 1; i < lines.length - 1; i++) {
+				let line = lines[i];
+				// Remove comment marker if present
+				line = line.replace(/\/\/\s*/, '');
+				// Remove quotes and trim
+				line = line.replace(/["]/g, '').trim();
+				
+				for (let j = 0; j < line.length; j++) {
+					if (line[j] === '#') {
+						ctx.fillStyle = 'black';
+						ctx.fillRect(
+							offsetX + j * cellSize,
+							offsetY + (i-1) * cellSize,
+							cellSize,
+							cellSize
+						);
+					}
+				}
+			}
+		}
+
+		function createEditableCanvas() {
+			const canvas = document.getElementById('editableCanvas');
+			const ctx = canvas.getContext('2d');
+			const cellSize = 12;
+			
+			// Match the new height from displayCanvas
+			const padding = cellSize * 2;
+			canvas.width = 32 * cellSize + padding * 2;
+			canvas.height = 23 * cellSize + padding * 2;  // Changed from 22 to 23
+			
+			function clearCanvas() {
+				// Initialize empty maze (all white)
+				ctx.fillStyle = 'white';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				
+				// Redraw grid
+				ctx.strokeStyle = '#ccc';
+				ctx.lineWidth = 0.5;
+				for (let x = 0; x <= canvas.width; x += cellSize) {
+					ctx.beginPath();
+					ctx.moveTo(x, 0);
+					ctx.lineTo(x, canvas.height);
+					ctx.stroke();
+				}
+				for (let y = 0; y <= canvas.height; y += cellSize) {
+					ctx.beginPath();
+					ctx.moveTo(0, y);
+					ctx.lineTo(canvas.width, y);
+					ctx.stroke();
+				}
+				
+				// Clear the ASCII representation
+				document.getElementById('editedMaze').value = '';
+			}
+			
+			// Initialize the canvas
+			clearCanvas();
+			
+			// Add clear button functionality
+			document.getElementById('clearCanvas').addEventListener('click', clearCanvas);
+			
+			// Handle click/drag to draw
+			let isDrawing = false;
+			let currentColor = 'black';
+			let modifiedCells = new Set(); // Track cells modified in current drag
+			
+			canvas.addEventListener('mousedown', startDrawing);
+			canvas.addEventListener('mousemove', draw);
+			canvas.addEventListener('mouseup', stopDrawing);
+			canvas.addEventListener('mouseleave', stopDrawing);
+			
+			function startDrawing(e) {
+				isDrawing = true;
+				modifiedCells.clear(); // Clear the set when starting a new drag
+				draw(e);
+			}
+			
+			function draw(e) {
+				if (!isDrawing) return;
+				
+				const rect = canvas.getBoundingClientRect();
+				const x = e.clientX - rect.left;
+				const y = e.clientY - rect.top;
+				
+				// Get cell coordinates
+				const cellX = Math.floor(x / cellSize);
+				const cellY = Math.floor(y / cellSize);
+				
+				// Create a cell identifier
+				const cellId = `${cellX},${cellY}`;
+				
+				// Only process the cell if we haven't modified it in this drag operation
+				if (!modifiedCells.has(cellId)) {
+					// Get current cell color
+					const imageData = ctx.getImageData(cellX * cellSize + 1, cellY * cellSize + 1, 1, 1).data;
+					const isCurrentlyBlack = imageData[0] === 0;
+					
+					// Toggle color
+					ctx.fillStyle = isCurrentlyBlack ? 'white' : 'black';
+					ctx.fillRect(cellX * cellSize, cellY * cellSize, cellSize, cellSize);
+					
+					// Redraw grid lines around the cell
+					ctx.strokeStyle = '#ccc';
+					ctx.strokeRect(cellX * cellSize, cellY * cellSize, cellSize, cellSize);
+					
+					// Mark this cell as modified
+					modifiedCells.add(cellId);
+					
+					// Update ASCII representation
+					updateAsciiMaze();
+				}
+			}
+			
+			function stopDrawing() {
+				isDrawing = false;
+				modifiedCells.clear(); // Clear the set when ending the drag
+			}
+			
+			function updateAsciiMaze() {
+				let ascii = 'm=[\n';
+				const cellSize = 12;
+				const mazeWidth = 32;
+				const mazeHeight = 21;
+				
+				for (let y = 0; y < mazeHeight; y++) {
+					let line = '';
+					if (y === mazeHeight - 1) {
+						line = '// "';  // Add comment marker without extra spaces
+					} else {
+						line = '   "';  // Normal indentation for other lines
+					}
+					
+					for (let x = 0; x < mazeWidth; x++) {
+						const imageData = ctx.getImageData(x * cellSize + 1, y * cellSize + 1, 1, 1).data;
+						line += imageData[0] === 0 ? '#' : ' ';
+					}
+					line += '",\n';
+					ascii += line;
+				}
+				ascii += '];';
+				document.getElementById('editedMaze').value = ascii;
+			}
+			
+			function fillAll() {
+				// Fill entire canvas with black squares
+				for (let y = 0; y < canvas.height; y += cellSize) {
+					for (let x = 0; x < canvas.width; x += cellSize) {
+						ctx.fillStyle = 'black';
+						ctx.fillRect(x, y, cellSize, cellSize);
+					}
+				}
+				
+				// Redraw grid
+				ctx.strokeStyle = '#ccc';
+				ctx.lineWidth = 0.5;
+				for (let x = 0; x <= canvas.width; x += cellSize) {
+					ctx.beginPath();
+					ctx.moveTo(x, 0);
+					ctx.lineTo(x, canvas.height);
+					ctx.stroke();
+				}
+				for (let y = 0; y <= canvas.height; y += cellSize) {
+					ctx.beginPath();
+					ctx.moveTo(0, y);
+					ctx.lineTo(canvas.width, y);
+					ctx.stroke();
+				}
+				
+				// Update ASCII representation
+				updateAsciiMaze();
+			}
+			
+			// Add fill all button functionality
+			document.getElementById('fillCanvas').addEventListener('click', fillAll);
+		}
+
+		function getmaze(x, y) {
+			var t = document.getElementById("maze");
+			const m = maze(x, y);
+			t.value = display(m);
+			updatePreview();
+		}
+
+		// Update onload to initialize both canvases
+		window.onload = function() {
+			getmaze(10, 16);
+			createEditableCanvas();
+		};
+
+		function updatePreview() {
+			const textContent = document.getElementById('maze').value;
+			const canvas = document.getElementById('mazeCanvas');
+			const ctx = canvas.getContext('2d');
+			
+			const cellSize = 12;
+			const padding = cellSize * 2;
+			canvas.width = 32 * cellSize + padding * 2;
+			canvas.height = 23 * cellSize + padding * 2;
+			
+			// Clear canvas
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			
+			// Draw maze from text content
+			const lines = textContent.split('\n');
+			const offsetX = padding;
+			const offsetY = padding;
+			
+			for (let i = 1; i < lines.length - 1; i++) {
+				let line = lines[i];
+				// Remove comment marker if present
+				line = line.replace(/\/\/\s*/, '');
+				// Remove quotes and trim
+				line = line.replace(/["]/g, '').trim();
+				
+				for (let j = 0; j < line.length; j++) {
+					if (line[j] === '#') {
+						ctx.fillStyle = 'black';
+						ctx.fillRect(
+							offsetX + j * cellSize,
+							offsetY + (i-1) * cellSize,
+							cellSize,
+							cellSize
+						);
+					}
+				}
+			}
+		}
+
+		function copyToClipboard(elementId) {
+			const textarea = document.getElementById(elementId);
+			textarea.select();
+			document.execCommand('copy');
+			
+			// Visual feedback
+			const button = document.querySelector(`button[data-target="${elementId}"]`);
+			const originalText = button.textContent;
+			button.textContent = 'Copied!';
+			setTimeout(() => {
+				button.textContent = originalText;
+			}, 1000);
+		}
+
+		function editGeneratedMaze() {
+			// Get the generated maze content
+			const generatedMaze = document.getElementById('maze').value;
+			
+			// Get the canvas and context
+			const canvas = document.getElementById('editableCanvas');
+			const ctx = canvas.getContext('2d');
+			
+			// Clear the canvas first
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			
+			// Draw the generated maze onto the editable canvas
+			const lines = generatedMaze.split('\n');
+			const cellSize = 12;
+			
+			for (let i = 1; i < lines.length - 1; i++) {
+				let line = lines[i];
+				// Remove comment marker if present (for last line)
+				line = line.replace(/\/\/\s*/, '');
+				// Remove quotes and trim
+				line = line.replace(/["]/g, '').trim();
+				
+				for (let j = 0; j < line.length; j++) {
+					if (line[j] === '#') {
+						ctx.fillStyle = 'black';
+						ctx.fillRect(
+							j * cellSize,
+							(i-1) * cellSize,
+							cellSize,
+							cellSize
+						);
+					}
+				}
+			}
+			
+			// Redraw grid
+			ctx.strokeStyle = '#ccc';
+			ctx.lineWidth = 0.5;
+			for (let x = 0; x <= canvas.width; x += cellSize) {
+				ctx.beginPath();
+				ctx.moveTo(x, 0);
+				ctx.lineTo(x, canvas.height);
+				ctx.stroke();
+			}
+			for (let y = 0; y <= canvas.height; y += cellSize) {
+				ctx.beginPath();
+				ctx.moveTo(0, y);
+				ctx.lineTo(canvas.width, y);
+				ctx.stroke();
+			}
+			
+			// Update ASCII representation
+			document.getElementById('editedMaze').value = generatedMaze;
+		}
+
+		--></script>
+	</head>
+	<body>
+		<div class="header">
+			<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+				<div>
+					<h1>Maze Generator & Editor</h1>
+					<p>Create a custom maze for the "Labyrinth" 3D print. Click "Copy Maze" to share the design with me, don't worry if formatting looks weird when pasting.</p>
+				</div>
+				<div style="flex-shrink: 0;">
+					<p style="color: #fff; margin-bottom: 5px;">Example of rendered output:</p>
+					<img src="example.png" alt="Example of rendered maze" style="max-height: 300px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+				</div>
+			</div>
+		</div>
+		
+		<!-- Generated Maze Section -->
+		<div class="section">
+			<div class="flex-container">
+				<div>
+					<h2 class="section-title">Generated Maze</h2>
+					<textarea rows=22 cols=40 id='maze' style="width: 400px; height: 440px;"></textarea>
+					<div class="button-group">
+						<input value='Generate Maze' type='submit' onclick="getmaze(10,16); return false"/>
+						<button onclick="updatePreview()">Update Preview</button>
+						<button class="copy-button" data-target="maze" onclick="copyToClipboard('maze')">Copy Maze</button>
+						<button onclick="editGeneratedMaze()" style="background-color: #9b59b6;">Edit in Drawing Tool</button>
+					</div>
+				</div>
+				<div>
+					<h2 class="section-title">Preview</h2>
+					<canvas id="mazeCanvas" style="border: 1px solid #ddd;"></canvas>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Editable Maze Section -->
+		<div class="section">
+			<div class="flex-container">
+				<div>
+					<div class="section-header">
+						<h2 class="section-title">Draw Your Maze</h2>
+						<div style="display: flex; gap: 10px;">
+							<button id="fillCanvas" style="background-color: #34495e;">Fill All</button>
+							<button id="clearCanvas">Clear Canvas</button>
+						</div>
+					</div>
+					<p style="color: #666; font-size: 0.9em;">(Click/drag to toggle walls)</p>
+					<canvas id="editableCanvas" style="border: 1px solid #ddd;"></canvas>
+				</div>
+				<div>
+					<div class="section-header">
+						<h2 class="section-title">ASCII Representation</h2>
+						<button class="copy-button" data-target="editedMaze" onclick="copyToClipboard('editedMaze')">Copy Maze</button>
+					</div>
+					<textarea rows=22 cols=40 id='editedMaze' readonly style="width: 400px; height: 440px;"></textarea>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
